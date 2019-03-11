@@ -1,13 +1,13 @@
 {
-  "main.css": "/fibbage_clone/static/css/main.21f7c3e3.chunk.css",
-  "main.js": "/fibbage_clone/static/js/main.c04afc4a.chunk.js",
-  "main.js.map": "/fibbage_clone/static/js/main.c04afc4a.chunk.js.map",
+  "main.css": "/fibbage_clone/static/css/main.6985bad3.chunk.css",
+  "main.js": "/fibbage_clone/static/js/main.f95c1824.chunk.js",
+  "main.js.map": "/fibbage_clone/static/js/main.f95c1824.chunk.js.map",
   "runtime~main.js": "/fibbage_clone/static/js/runtime~main.8d4a3fed.js",
   "runtime~main.js.map": "/fibbage_clone/static/js/runtime~main.8d4a3fed.js.map",
-  "static/js/2.2f244a50.chunk.js": "/fibbage_clone/static/js/2.2f244a50.chunk.js",
-  "static/js/2.2f244a50.chunk.js.map": "/fibbage_clone/static/js/2.2f244a50.chunk.js.map",
+  "static/js/2.e0a02a30.chunk.js": "/fibbage_clone/static/js/2.e0a02a30.chunk.js",
+  "static/js/2.e0a02a30.chunk.js.map": "/fibbage_clone/static/js/2.e0a02a30.chunk.js.map",
   "index.html": "/fibbage_clone/index.html",
-  "precache-manifest.6a3e7ea394df1e20e0508a5bc0de3e2a.js": "/fibbage_clone/precache-manifest.6a3e7ea394df1e20e0508a5bc0de3e2a.js",
+  "precache-manifest.a91d124fb8f634dba5fd4e19edfc8c9c.js": "/fibbage_clone/precache-manifest.a91d124fb8f634dba5fd4e19edfc8c9c.js",
   "service-worker.js": "/fibbage_clone/service-worker.js",
-  "static/css/main.21f7c3e3.chunk.css.map": "/fibbage_clone/static/css/main.21f7c3e3.chunk.css.map"
+  "static/css/main.6985bad3.chunk.css.map": "/fibbage_clone/static/css/main.6985bad3.chunk.css.map"
 }
