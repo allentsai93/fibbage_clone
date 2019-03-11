@@ -16,7 +16,7 @@ class Game extends Component {
     }
     submitHandler = (e) => {
         e.preventDefault();
-        const randomAnswers = [this.state.submittedAnswer, ...this.state.answers];
+        const randomAnswers = [this.state.submittedAnswer || this.state.autopickedAnswer, ...this.state.answers];
         this.shuffleArray(randomAnswers);
         this.setState({answered: true, answers: randomAnswers});
     }
@@ -24,14 +24,18 @@ class Game extends Component {
         this.setState({submittedAnswer: e.target.value})
     }
     clickedAnswerHandler = (e) => {
-        console.log(e.target.value);
-        this.setState({chosenAnswer: e.target.value});
+        this.setState({chosenAnswer: e});
     }
     shuffleArray = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
+    }
+    suggestLie = () => {
+        this.setState({
+            autopickedAnswer: this.state.answers[2]
+        })
     }
     render() {
         return (
@@ -41,8 +45,9 @@ class Game extends Component {
                     <Question question={this.state.question.results[0].question}/>
                     {!this.state.answered ? 
                         <form onSubmit={this.submitHandler}>
-                            <input type={"text"} onChange={this.changeHandler}/>
-                            <input type={"submit"} placeholder={"Submit"} />
+                            <input type="text" onChange={this.changeHandler} placeholder={this.state.autopickedAnswer ? this.state.autopickedAnswer : ''}/>
+                            <input type="submit" value="Submit" />
+                            <span onClick={this.suggestLie}>Lie For Me</span>
                         </form>
                     : !this.state.chosenAnswer ? 
                         <Answers 
