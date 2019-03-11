@@ -16,7 +16,9 @@ class Game extends Component {
     }
     submitHandler = (e) => {
         e.preventDefault();
-        this.setState({answered: true, answers: [this.state.submittedAnswer, ...this.state.answers]});
+        const randomAnswers = [this.state.submittedAnswer, ...this.state.answers];
+        this.shuffleArray(randomAnswers);
+        this.setState({answered: true, answers: randomAnswers});
     }
     changeHandler = (e) => {
         this.setState({submittedAnswer: e.target.value})
@@ -24,6 +26,12 @@ class Game extends Component {
     clickedAnswerHandler = (e) => {
         console.log(e.target.value);
         this.setState({chosenAnswer: e.target.value});
+    }
+    shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
     }
     render() {
         return (
