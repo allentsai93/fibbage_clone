@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import WaitingRoom from '../../containers/WaitingRoom';
+import WaitingRoom from '../../components/WaitingRoom';
 import Grid from '@material-ui/core/Grid';
 const firebase = require("firebase/app");
 require("firebase/database");
