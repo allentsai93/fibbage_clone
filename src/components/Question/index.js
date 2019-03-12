@@ -2,7 +2,7 @@ import React from 'react';
 
 const Question = (props) => (
     <div>
-        <h2>{props.question}</h2>
+        <h2 dangerouslySetInnerHTML={{__html: props.question}}></h2>
     </div>
 );
 

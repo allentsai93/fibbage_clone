@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
 import WaitingRoom from '../../components/WaitingRoom';
 import Grid from '@material-ui/core/Grid';
-const firebase = require("firebase/app");
-require("firebase/database");
-const config = {
-  apiKey: "AIzaSyAsdY2YHQDAVJ9ZJgsqNVB2kaB3A5jVmNY",
-  authDomain: "fibbage-b1e4d.firebaseapp.com",
-  databaseURL: "https://fibbage-b1e4d.firebaseio.com",
-  projectId: "fibbage-b1e4d",
-  storageBucket: "fibbage-b1e4d.appspot.com",
-};
-firebase.initializeApp(config);
-const uuidv1 = require('uuid/v1');
-const uuidv4 = require('uuid/v4');
+import { uuidv1, uuidv4, firebase } from '../../firebase.js';
 
 class Home extends Component {
     state = {
@@ -106,23 +95,15 @@ class Home extends Component {
           >
                 {this.state.started ? <WaitingRoom /> : !this.state.existingRoom ? 
                     <>
-                    <input type="text" placeholder="Enter a username" onInput={(e) => this.inputHandler(e)}/>
+                    <input type="text" placeholder="Enter a username" onInput={this.inputHandler}/>
                     <span onClick={this.startGameHandler}>Create a Room</span>
                     <span onClick={this.joinGameHandler}>Join a Room</span>
                     <p>{this.state.errorMsg}</p>
                     </>
                     :
                     <>
-                        <input type="text" placeholder="Enter a game id" onInput={(e) => this.gameIdInputHandler(e)}/>
-                        <button onClick={() => this.joinRoom()}>Join Room</button>
-                        {this.state.joinGameErrorMsg.length === 'Username already taken' ? 
-                            <>
-                                <p>{[this.state.joinGameErrorMsg]}</p>
-                                <input type="text" placeholder="Enter a username" onInput={(e) => this.inputHandler(e)}/>
-                            </>
-                            :
-                            <p>{[this.state.joinGameErrorMsg]}</p>
-                        }
+                        <input type="text" placeholder="Enter a game id" onInput={this.gameIdInputHandler}/>
+                        <button onClick={this.joinRoom}>Join Room</button>
                     </>
                 }
             </Grid>
