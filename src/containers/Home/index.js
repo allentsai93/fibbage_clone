@@ -19,7 +19,12 @@ class Home extends Component {
         gameId: '',
         user: '',
         existingRoom: false,
+        started: false,
         errorMsg: ''
+    }
+    
+    startGameHandler = () => {
+        this.setState({started: true})
     }
 
     inputHandler = (e) =>{
@@ -29,15 +34,18 @@ class Home extends Component {
 
     gameIdInputHandler = (e) =>{
         const gameId = e.target.value;
-        this.setState({ gameId: gameId });
+        this.setState({ 
+            gameId  : gameId, 
+            started : true
+        });
     }
 
     joinRoom = () => {
         const gameId = this.state.gameId;
         const user = this.state.user;
         firebase.database().ref('games/' + gameId + '/' + user).set({
-            points    : 0,
-            id        : uuidv1()
+            points : 0,
+            id     : uuidv1()
         })
     }
 
@@ -53,7 +61,8 @@ class Home extends Component {
                 id        : uuidv1()
             });
             this.setState({
-                gameId    : gameId
+                gameId    : gameId,
+                started   : true
             })
         } else {
             this.setState({ errorMsg: "Must enter a username to create game"})
