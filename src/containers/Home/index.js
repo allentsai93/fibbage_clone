@@ -9,8 +9,7 @@ class Home extends Component {
         user: '',
         existingRoom: false,
         started: false,
-        errorMsg: '',
-        joinGameErrorMsg: ''
+        errorMsg: ''
     }
     
     startGameHandler = () => {
@@ -35,14 +34,14 @@ class Home extends Component {
         const gameData  = firebase.database().ref('games/');
 
         gameData.once("value")
-            .then(function(snapshot){
+            .then((snapshot) => {
                 if(!snapshot.hasChild(gameId)){
                     return Promise.reject();
                 } else {
                     const userData  = firebase.database().ref('games/' + gameId + '/players/');
                     let nameTaken   = false;
                     userData.once("value")
-                        .then(function(snapshot){
+                        .then((snapshot) => {
                             if(snapshot.hasChild(user)){
                                 console.log('hit')
                                return Promise.reject();
@@ -52,9 +51,11 @@ class Home extends Component {
                                     id     : uuidv1()
                                 })
                             }
-                        }).then(() => this.setState({started: true})).catch(() =>  this.setState({ joinGameErrorMsg: "Username already taken" }))
+                        })
+                        .then(() => this.setState({started: true}))
+                        .catch(() =>  this.setState({ errorMsg: "Username already taken" }))
                 }
-            }).catch(() =>  this.setState({ joinGameErrorMsg: "Game does not exist" }))
+            }).catch(() =>  this.setState({ errorMsg: "Game does not exist" }))
     }
 
     startGameHandler = () => {
@@ -104,6 +105,7 @@ class Home extends Component {
                     <>
                         <input type="text" placeholder="Enter a game id" onInput={this.gameIdInputHandler}/>
                         <button onClick={this.joinRoom}>Join Room</button>
+                        <p>{this.state.errorMsg}</p>
                     </>
                 }
             </Grid>
