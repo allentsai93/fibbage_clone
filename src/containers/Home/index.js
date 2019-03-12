@@ -47,22 +47,25 @@ class Home extends Component {
 
         gameData.once("value")
             .then(function(snapshot){
-
-            })
-
-        const userData  = firebase.database().ref('games/' + gameId + '/players/');
-        let nameTaken   = false;
-        userData.once("value")
-            .then(function(snapshot){
-                if(snapshot.hasChild(user)){
-                   return Promise.reject();
+                if(!snapshot.hasChild(gameId)){
+                    return Promise.reject();
                 } else {
-                    firebase.database().ref('games/' + gameId + '/players/' + user).set({
-                        points : 0,
-                        id     : uuidv1()
-                    })
+                    const userData  = firebase.database().ref('games/' + gameId + '/players/');
+                    let nameTaken   = false;
+                    userData.once("value")
+                        .then(function(snapshot){
+                            if(snapshot.hasChild(user)){
+                                console.log('hit')
+                               return Promise.reject();
+                            } else {
+                                firebase.database().ref('games/' + gameId + '/players/' + user).set({
+                                    points : 0,
+                                    id     : uuidv1()
+                                })
+                            }
+                        }).then(() => this.setState({started: true})).catch(() =>  this.setState({ joinGameErrorMsg: "Username already taken" }))
                 }
-            }).then(() => this.setState({started: true})).catch(() =>  this.setState({ joinGameErrorMsg: "Username already taken" }))
+            }).catch(() =>  this.setState({ joinGameErrorMsg: "Game does not exist" }))
     }
 
     startGameHandler = () => {
@@ -112,13 +115,13 @@ class Home extends Component {
                     <>
                         <input type="text" placeholder="Enter a game id" onInput={(e) => this.gameIdInputHandler(e)}/>
                         <button onClick={() => this.joinRoom()}>Join Room</button>
-                        {this.state.joinGameErrorMsg.length > 0 ? 
+                        {this.state.joinGameErrorMsg.length === 'Username already taken' ? 
                             <>
                                 <p>{[this.state.joinGameErrorMsg]}</p>
                                 <input type="text" placeholder="Enter a username" onInput={(e) => this.inputHandler(e)}/>
                             </>
                             :
-                            null
+                            <p>{[this.state.joinGameErrorMsg]}</p>
                         }
                     </>
                 }
