@@ -27,13 +27,23 @@ class Home extends Component {
         this.setState({ user: name });
     }
 
-    startGameHandler = (e) => {
+    gameIdInputHandler = (e) =>{
+        const gameId        = e.target.value;
+        const currentUser   = this.state.user;
+        firebase.database().ref('games/' + gameId).set({
+            players : {currentUser}
+        })
+
+    }
+
+    startGameHandler = () => {
         if(this.state.user.length > 0){
             const gameId = uuidv4();
+            const gameOwner = this.state.user
             firebase.database().ref('games/' + gameId).set({
                 gameId    : gameId,
-                gameOwner : this.state.user,
-                players   : {}
+                gameOwner : gameOwner,
+                players   : {gameOwner}
             });
             this.setState({
                 gameId: gameId
@@ -59,20 +69,16 @@ class Home extends Component {
             justify="center"
             alignItems="center"
           >
-                {this.state.started ? <WaitingRoom /> : !this.state.optionSelected ? 
+                {this.state.started ? <WaitingRoom /> : !this.state.existingRoom ? 
                     <>
                     <input type="text" placeholder="Enter a username" onInput={(e) => this.inputHandler(e)}/>
-                    <span onClick={this.optionHandler}>Create a Room</span>
-                    <span onClick={this.joinRoomHandler}>Join a Room</span>
+                    <span onClick={this.startGameHandler}>Create a Room</span>
+                    <span onClick={this.joinGameHandler}>Join a Room</span>
                     <p>{this.state.errorMsg}</p>
                     </>
                     :
-                    this.state.existingRoom ?
                     <>
-                        <form onSubmit={this.startGameHandler}>
-                        <label>Enter the room code:</label>
-                        <input type="text" />
-                        </form>
+                        <input type="text" placeholder="Enter a game id"/>
                     </>
                 }
             </Grid>
