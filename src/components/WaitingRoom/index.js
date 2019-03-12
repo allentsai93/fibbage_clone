@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import StartGame from '../../containers/StartGame';
+import StartGame from '../StartGame';
 
 function WaitingRoom() {
     const [startGame, setStartGame] = useState(false);
