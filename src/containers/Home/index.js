@@ -106,6 +106,11 @@ class Home extends Component {
                         <input type="text" placeholder="Enter a game id" onInput={this.gameIdInputHandler}/>
                         <button onClick={this.joinRoom}>Join Room</button>
                         <p>{this.state.errorMsg}</p>
+                        {this.state.errorMsg === 'Username already taken' ?
+                            <input type="text" placeholder="Enter a username" onInput={this.inputHandler}/> 
+                            :
+                            null 
+                        }
                     </>
                 }
             </Grid>
