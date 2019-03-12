@@ -14,7 +14,7 @@ class Home extends Component {
     }
 
     joinRoomHandler = () => {
-        this.setState({optionSelected: true, existingRoom: true, started: true})
+        this.setState({optionSelected: true, existingRoom: true})
     }
 
     startGameHandler = () => {
@@ -37,10 +37,8 @@ class Home extends Component {
                     :
                     this.state.existingRoom ?
                     <>
-                        <form onSubmit={this.joinRoomHandler}>
+                        <form onSubmit={this.startGameHandler}>
                         <label>Enter the room code:</label>
-                        <input type="text" />
-                        <label>Enter a cool name:</label>
                         <input type="text" />
                         </form>
                     </>
