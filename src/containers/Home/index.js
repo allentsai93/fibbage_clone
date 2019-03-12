@@ -29,25 +29,43 @@ class Home extends Component {
     }
 
     joinRoom = () => {
-        const gameId = this.state.gameId;
-        const user = this.state.user;
-        firebase.database().ref('games/' + gameId + '/' + user).set({
-            points : 0,
-            id     : uuidv1()
-        })
-        this.setState({
-            started: true
-        })
+        const gameId    = this.state.gameId;
+        const user      = this.state.user;
+        const gameData  = firebase.database().ref('games/');
+
+        gameData.once("value")
+            .then((snapshot) => {
+                if(!snapshot.hasChild(gameId)){
+                    return Promise.reject();
+                } else {
+                    const userData  = firebase.database().ref('games/' + gameId + '/players/');
+                    let nameTaken   = false;
+                    userData.once("value")
+                        .then((snapshot) => {
+                            if(snapshot.hasChild(user)){
+                                console.log('hit')
+                               return Promise.reject();
+                            } else {
+                                firebase.database().ref('games/' + gameId + '/players/' + user).set({
+                                    points : 0,
+                                    id     : uuidv1()
+                                })
+                            }
+                        })
+                        .then(() => this.setState({started: true}))
+                        .catch(() =>  this.setState({ errorMsg: "Username already taken" }))
+                }
+            }).catch(() =>  this.setState({ errorMsg: "Game does not exist" }))
     }
 
     startGameHandler = () => {
         if(this.state.user.length > 0){
-            const gameId = uuidv4();
+            const gameId    = uuidv4();
             const gameOwner = this.state.user
             firebase.database().ref('games/' + gameId).set({
                 gameOwner : gameOwner
             });
-            firebase.database().ref('games/' + gameId + '/' + gameOwner).set({
+            firebase.database().ref('games/' + gameId + '/players/' + gameOwner).set({
                 points    : 0,
                 id        : uuidv1()
             });
@@ -87,6 +105,7 @@ class Home extends Component {
                     <>
                         <input type="text" placeholder="Enter a game id" onInput={this.gameIdInputHandler}/>
                         <button onClick={this.joinRoom}>Join Room</button>
+                        <p>{this.state.errorMsg}</p>
                     </>
                 }
             </Grid>
