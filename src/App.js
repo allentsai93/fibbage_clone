@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Game from './containers/Game';
+import Gameroom from './containers/Gameroom';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import { withStyles } from '@material-ui/core/styles';
@@ -15,6 +16,7 @@ const styles = theme => ({
 });
 class App extends Component {
   state = {
+    gameRoom: '',
     isLoaded: false,
     categoryChosen: false,
     loadedQuestion: {},
@@ -89,25 +91,31 @@ class App extends Component {
     ));
 
     return (
+      <>
+      {this.state.gameRoom === '' ?
+      <Gameroom/>
+        :
         <Grid
           container
           direction="column"
           justify="center"
           alignItems="center"
         >
-        {!this.state.categoryChosen ? 
-        <>
-        <h1>Choose a Category</h1>
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
-        {categories}
-        </Grid> 
-        </> : <Game question={this.state.loadedQuestion}/>}
-      </Grid>
+        {!this.state.categoryChosen ?
+          <>
+          <h1>Choose a Category</h1>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+          >
+          {categories}
+          </Grid>
+          </> : <Game question={this.state.loadedQuestion}/>}
+        </Grid>
+      }
+    </>
     );
   }
 }

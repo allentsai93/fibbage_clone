@@ -43,14 +43,14 @@ class Game extends Component {
                 {this.state.question.response_code === 0 ?
                     <>
                     <Question question={this.state.question.results[0].question}/>
-                    {!this.state.answered ? 
+                    {!this.state.answered ?
                         <form onSubmit={this.submitHandler}>
                             <input type="text" onChange={this.changeHandler} placeholder={this.state.autopickedAnswer ? this.state.autopickedAnswer : ''}/>
                             <input type="submit" value="Submit" />
                             <span onClick={this.suggestLie}>Lie For Me</span>
                         </form>
-                    : !this.state.chosenAnswer ? 
-                        <Answers 
+                    : !this.state.chosenAnswer ?
+                        <Answers
                         answers={this.state.answers}
                         onSubmit={this.clickedAnswerHandler}
                         /> : <Results correct={this.state.question.results[0].correct_answer} />
