@@ -16,30 +16,39 @@ const uuidv4 = require('uuid/v4');
 
 class Home extends Component {
     state = {
-        started: false,
-        optionSelected: false,
+        gameId: '',
+        user: '',
         existingRoom: false,
-        gameId: ''
+        errorMsg: ''
     }
 
-    optionHandler = () => {
-        this.setState({optionSelected: true})
+    inputHandler = (e) =>{
+        const name = e.target.value;
+        this.setState({ user: name });
     }
 
-    joinRoomHandler = () => {
-        this.setState({optionSelected: true, existingRoom: true})
+    startGameHandler = (e) => {
+        if(this.state.user.length > 0){
+            const gameId = uuidv4();
+            firebase.database().ref('games/' + gameId).set({
+                gameId    : gameId,
+                gameOwner : this.state.user,
+                players   : {}
+            });
+            this.setState({
+                gameId: gameId
+            })
+        } else {
+            this.setState({ errorMsg: "Must enter a username to create game"})
+        }
     }
 
-    startGameHandler = () => {
-        let gameId = uuidv4();
-        firebase.database().ref('games/' + gameId).set({
-            gameId    : gameId,
-            players   : {}
-        });
-        this.setState({
-            started: true,
-            gameId: gameId
-        })
+    joinGameHandler = (e) =>{
+        if(this.state.user.length > 0){
+            this.setState({ existingRoom: true });
+        } else {
+            this.setState({ errorMsg: "Must enter a username to join game"})
+        }
     }
 
     render() {
@@ -52,21 +61,16 @@ class Home extends Component {
           >
                 {this.state.started ? <WaitingRoom /> : !this.state.optionSelected ? 
                     <>
+                    <input type="text" placeholder="Enter a username" onInput={(e) => this.inputHandler(e)}/>
                     <span onClick={this.optionHandler}>Create a Room</span>
                     <span onClick={this.joinRoomHandler}>Join a Room</span>
+                    <p>{this.state.errorMsg}</p>
                     </>
                     :
                     this.state.existingRoom ?
                     <>
                         <form onSubmit={this.startGameHandler}>
                         <label>Enter the room code:</label>
-                        <input type="text" />
-                        </form>
-                    </>
-                    :
-                    <>
-                        <form onSubmit={this.startGameHandler}>
-                        <label>Enter a cool name:</label>
                         <input type="text" />
                         </form>
                     </>
