@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/fibbage_clone/precache-manifest.af3e71184a419a8578329649ed3446ea.js"
+  "/fibbage_clone/precache-manifest.6e1c7dd441c92114050dc2f6a74aaeda.js"
 );
 
 workbox.clientsClaim();
