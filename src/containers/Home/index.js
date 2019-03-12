@@ -41,13 +41,12 @@ class Home extends Component {
     }
 
     joinRoom = () => {
-        const gameId = this.state.gameId;
-        const user = this.state.user;
-        const userData = firebase.database().ref('games/' + gameId);
+        const gameId    = this.state.gameId;
+        const user      = this.state.user;
+        const userData  = firebase.database().ref('games/' + gameId);
         userData.once("value")
             .then(function(snapshot){
                 if(snapshot.hasChild(user)){
-                    console.log('did we hit this at least?')
                     this.setState({ joinGameErrorMsg: "Username already taken" })
                 } else {
                     firebase.database().ref('games/' + gameId + '/players/' + user).set({
@@ -63,7 +62,7 @@ class Home extends Component {
 
     startGameHandler = () => {
         if(this.state.user.length > 0){
-            const gameId = uuidv4();
+            const gameId    = uuidv4();
             const gameOwner = this.state.user
             firebase.database().ref('games/' + gameId).set({
                 gameOwner : gameOwner
