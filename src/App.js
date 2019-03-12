@@ -30,6 +30,7 @@ class App extends Component {
     state = {
       gameRoom: '',
       userId: '',
+      name: '',
       isLoaded: false,
       categoryChosen: false,
       players: [],
@@ -93,30 +94,45 @@ class App extends Component {
             .then(res => res.json())
               .then(data => this.setState({loadedQuestion: data, categoryChosen: true}))
   }
-  createGame = (userId, name) => {
-    if(this.state.userId === ''){
-      userId = uuidv1();
+  createGame = (userId) => {
+    if(this.state.name.length > 0){
+      let userId = '';
+      if(this.state.userId === ''){
+        userId = uuidv1();
+      }
+      const gameId = uuidv4();
+      firebase.database().ref('games/' + gameId).set({
+        gameOwner : userId,
+        gameId    : gameId,
+        players   : {}
+      });
+      firebase.database().ref('users/' + userId).set({
+        userId    : userId,
+        name      : this.state.name
+      });
+      this.setState({
+        gameRoom  : gameId,
+        gameOwner : this.state.name,
+        players   : [this.state.name]
+      });
+    } else {
+      this.setState({ errorMessage: 'Player must enter a name before joining or starting a game' })
     }
-    const gameId = uuidv4();
-    firebase.database().ref('games/' + gameId).set({
-      gameOwner: userId,
-      gameId: gameId,
-      players: {}
-    });
-    firebase.database().ref('users/' + userId).set({
-      userId: userId,
-      name: name
-    });
-    this.setState({
-      gameRoom: gameId,
-      gameOwner: name
-    });
   }
-  joinGame = (gameId, userId, name) => {
-    if(this.state.userId === ''){
-      userId = uuidv1();
+  joinGame = (gameId, name) => {
+    if(this.state.gameToJoin.length > 0 && this.state.name.length > 0){
+      let userId = '';
+      if(this.state.userId === ''){
+        userId = uuidv1();
+      }
+
+    } else {
+      this.setState({ errorMessage: 'Player must enter a name & game before joining or starting a game' })
     }
-    console.log('hit join game')
+  }
+  onNameEntry = (e) => {
+    let name = e.target.value;
+    this.setState({ name: name })
   }
 
   render() {
@@ -136,6 +152,8 @@ class App extends Component {
       <Gameroom
       createGame={this.createGame}
       joinGame={this.joinGame}
+      onNameEntry={this.onNameEntry}
+      errorMessage={this.state.errorMessage}
       />
         :
         <Grid
