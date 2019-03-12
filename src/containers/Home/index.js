@@ -18,7 +18,8 @@ class Home extends Component {
     state = {
         started: false,
         optionSelected: false,
-        existingRoom: false
+        existingRoom: false,
+        gameId: ''
     }
 
     optionHandler = () => {
@@ -30,7 +31,15 @@ class Home extends Component {
     }
 
     startGameHandler = () => {
-        this.setState({started: true})
+        let gameId = uuidv4();
+        firebase.database().ref('games/' + gameId).set({
+            gameId    : gameId,
+            players   : {}
+        });
+        this.setState({
+            started: true,
+            gameId: gameId
+        })
     }
 
     render() {
