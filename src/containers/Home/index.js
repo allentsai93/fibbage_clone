@@ -35,9 +35,9 @@ class Home extends Component {
     joinRoom = () => {
         const gameId = this.state.gameId;
         const user = this.state.user;
-        let players = 
         firebase.database().ref('games/' + gameId + '/' + user).set({
-            points: 0
+            points    : 0,
+            id        : uuidv1()
         })
     }
 
@@ -46,11 +46,11 @@ class Home extends Component {
             const gameId = uuidv4();
             const gameOwner = this.state.user
             firebase.database().ref('games/' + gameId).set({
-                gameId    : gameId,
                 gameOwner : gameOwner
             });
             firebase.database().ref('games/' + gameId + '/' + gameOwner).set({
-                points    : 0
+                points    : 0,
+                id        : uuidv1()
             });
             this.setState({
                 gameId    : gameId
