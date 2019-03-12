@@ -1,24 +1,82 @@
 import React, { Component } from 'react';
 import WaitingRoom from '../../components/WaitingRoom';
 import Grid from '@material-ui/core/Grid';
+const firebase = require("firebase/app");
+require("firebase/database");
+const config = {
+  apiKey: "AIzaSyAsdY2YHQDAVJ9ZJgsqNVB2kaB3A5jVmNY",
+  authDomain: "fibbage-b1e4d.firebaseapp.com",
+  databaseURL: "https://fibbage-b1e4d.firebaseio.com",
+  projectId: "fibbage-b1e4d",
+  storageBucket: "fibbage-b1e4d.appspot.com",
+};
+firebase.initializeApp(config);
+const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 
 class Home extends Component {
     state = {
+        gameId: '',
+        user: '',
+        existingRoom: false,
         started: false,
-        optionSelected: false,
-        existingRoom: false
+        errorMsg: ''
+    }
+    
+    startGameHandler = () => {
+        this.setState({started: true})
     }
 
-    optionHandler = () => {
-        this.setState({optionSelected: true})
+    inputHandler = (e) =>{
+        const name = e.target.value;
+        this.setState({ user: name });
     }
 
-    joinRoomHandler = () => {
-        this.setState({optionSelected: true, existingRoom: true})
+    gameIdInputHandler = (e) =>{
+        const gameId = e.target.value;
+        this.setState({ 
+            gameId  : gameId
+        });
+    }
+
+    joinRoom = () => {
+        const gameId = this.state.gameId;
+        const user = this.state.user;
+        firebase.database().ref('games/' + gameId + '/' + user).set({
+            points : 0,
+            id     : uuidv1()
+        })
+        this.setState({
+            started: true
+        })
     }
 
     startGameHandler = () => {
-        this.setState({started: true})
+        if(this.state.user.length > 0){
+            const gameId = uuidv4();
+            const gameOwner = this.state.user
+            firebase.database().ref('games/' + gameId).set({
+                gameOwner : gameOwner
+            });
+            firebase.database().ref('games/' + gameId + '/' + gameOwner).set({
+                points    : 0,
+                id        : uuidv1()
+            });
+            this.setState({
+                gameId    : gameId,
+                started   : true
+            })
+        } else {
+            this.setState({ errorMsg: "Must enter a username to create game"})
+        }
+    }
+
+    joinGameHandler = (e) =>{
+        if(this.state.user.length > 0){
+            this.setState({ existingRoom: true });
+        } else {
+            this.setState({ errorMsg: "Must enter a username to join game"})
+        }
     }
 
     render() {
@@ -29,25 +87,17 @@ class Home extends Component {
             justify="center"
             alignItems="center"
           >
-                {this.state.started ? <WaitingRoom /> : !this.state.optionSelected ? 
+                {this.state.started ? <WaitingRoom /> : !this.state.existingRoom ? 
                     <>
-                    <span onClick={this.optionHandler}>Create a Room</span>
-                    <span onClick={this.joinRoomHandler}>Join a Room</span>
-                    </>
-                    :
-                    this.state.existingRoom ?
-                    <>
-                        <form onSubmit={this.startGameHandler}>
-                        <label>Enter the room code:</label>
-                        <input type="text" />
-                        </form>
+                    <input type="text" placeholder="Enter a username" onInput={(e) => this.inputHandler(e)}/>
+                    <span onClick={this.startGameHandler}>Create a Room</span>
+                    <span onClick={this.joinGameHandler}>Join a Room</span>
+                    <p>{this.state.errorMsg}</p>
                     </>
                     :
                     <>
-                        <form onSubmit={this.startGameHandler}>
-                        <label>Enter a cool name:</label>
-                        <input type="text" />
-                        </form>
+                        <input type="text" placeholder="Enter a game id" onInput={(e) => this.gameIdInputHandler(e)}/>
+                        <button onClick={() => this.joinRoom()}>Join Room</button>
                     </>
                 }
             </Grid>
