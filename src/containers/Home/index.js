@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
 import WaitingRoom from '../../containers/WaitingRoom';
 import Grid from '@material-ui/core/Grid';
+const firebase = require("firebase/app");
+require("firebase/database");
+const config = {
+  apiKey: "AIzaSyAsdY2YHQDAVJ9ZJgsqNVB2kaB3A5jVmNY",
+  authDomain: "fibbage-b1e4d.firebaseapp.com",
+  databaseURL: "https://fibbage-b1e4d.firebaseio.com",
+  projectId: "fibbage-b1e4d",
+  storageBucket: "fibbage-b1e4d.appspot.com",
+};
+firebase.initializeApp(config);
+const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 
 class Home extends Component {
     state = {
