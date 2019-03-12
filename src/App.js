@@ -7,6 +7,18 @@ import { withStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import './App.css';
+const firebase = require("firebase/app");
+require("firebase/database");
+const config = {
+  apiKey: "AIzaSyAsdY2YHQDAVJ9ZJgsqNVB2kaB3A5jVmNY",
+  authDomain: "fibbage-b1e4d.firebaseapp.com",
+  databaseURL: "https://fibbage-b1e4d.firebaseio.com",
+  projectId: "fibbage-b1e4d",
+  storageBucket: "fibbage-b1e4d.appspot.com",
+};
+firebase.initializeApp(config);
+const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 
 const styles = theme => ({
   card: {
@@ -15,61 +27,63 @@ const styles = theme => ({
   }
 });
 class App extends Component {
-  state = {
-    gameRoom: '',
-    isLoaded: false,
-    categoryChosen: false,
-    loadedQuestion: {},
-    categories: [
-      {value:"9",
-      title:"General Knowledge"},
-      {value:"10",
-      title:"Books"},
-      {value:"11",
-      title:"Film"},
-      {value:"12",
-      title:"Music"},
-      {value:"13",
-      title:"Musicals & Theatres"},
-      {value:"14",
-      title:"Television"},
-      {value:"15",
-      title:"Video Games"},
-      {value:"16",
-      title:"Board Games"},
-      {value:"17",
-      title:"Science & Nature"},
-      {value:"18",
-      title:"Computers"},
-      {value:"19",
-      title:"Mathematics"},
-      {value:"20",
-      title:"Mythology"},
-      {value:"21",
-      title:"Sports"},
-      {value:"22",
-      title:"Geography"},
-      {value:"23",
-      title:"History"},
-      {value:"24",
-      title:"Politics"},
-      {value:"25",
-      title:"Art"},
-      {value:"26",
-      title:"Celebrities"},
-      {value:"27",
-      title:"Animals"},
-      {value:"28",
-      title:"Vehicles"},
-      {value:"29",
-      title:"Comics"},
-      {value:"30",
-      title:"Gadgets"},
-      {value:"31",
-      title:"Japanese Anime & Manga"},
-      {value:"32",
-      title:"Cartoon & Animations"}
-    ]
+    state = {
+      gameRoom: '',
+      userId: '',
+      isLoaded: false,
+      categoryChosen: false,
+      players: [],
+      loadedQuestion: {},
+      categories: [
+        {value:"9",
+        title:"General Knowledge"},
+        {value:"10",
+        title:"Books"},
+        {value:"11",
+        title:"Film"},
+        {value:"12",
+        title:"Music"},
+        {value:"13",
+        title:"Musicals & Theatres"},
+        {value:"14",
+        title:"Television"},
+        {value:"15",
+        title:"Video Games"},
+        {value:"16",
+        title:"Board Games"},
+        {value:"17",
+        title:"Science & Nature"},
+        {value:"18",
+        title:"Computers"},
+        {value:"19",
+        title:"Mathematics"},
+        {value:"20",
+        title:"Mythology"},
+        {value:"21",
+        title:"Sports"},
+        {value:"22",
+        title:"Geography"},
+        {value:"23",
+        title:"History"},
+        {value:"24",
+        title:"Politics"},
+        {value:"25",
+        title:"Art"},
+        {value:"26",
+        title:"Celebrities"},
+        {value:"27",
+        title:"Animals"},
+        {value:"28",
+        title:"Vehicles"},
+        {value:"29",
+        title:"Comics"},
+        {value:"30",
+        title:"Gadgets"},
+        {value:"31",
+        title:"Japanese Anime & Manga"},
+        {value:"32",
+        title:"Cartoon & Animations"}
+      ]
   }
   changeHandler = (e) => {
     this.fetchQuestions(e);
@@ -79,6 +93,32 @@ class App extends Component {
             .then(res => res.json())
               .then(data => this.setState({loadedQuestion: data, categoryChosen: true}))
   }
+  createGame = (userId, name) => {
+    if(this.state.userId === ''){
+      userId = uuidv1();
+    }
+    const gameId = uuidv4();
+    firebase.database().ref('games/' + gameId).set({
+      gameOwner: userId,
+      gameId: gameId,
+      players: {}
+    });
+    firebase.database().ref('users/' + userId).set({
+      userId: userId,
+      name: name
+    });
+    this.setState({
+      gameRoom: gameId,
+      gameOwner: name
+    });
+  }
+  joinGame = (gameId, userId, name) => {
+    if(this.state.userId === ''){
+      userId = uuidv1();
+    }
+    console.log('hit join game')
+  }
+
   render() {
     const { classes }  = this.props;
 
@@ -93,7 +133,10 @@ class App extends Component {
     return (
       <>
       {this.state.gameRoom === '' ?
-      <Gameroom/>
+      <Gameroom
+      createGame={this.createGame}
+      joinGame={this.joinGame}
+      />
         :
         <Grid
           container
@@ -103,6 +146,8 @@ class App extends Component {
         >
         {!this.state.categoryChosen ?
           <>
+          <p>Your Game Room: {this.state.gameRoom}</p>
+          <p>Players: {this.state.players}</p>
           <h1>Choose a Category</h1>
           <Grid
             container

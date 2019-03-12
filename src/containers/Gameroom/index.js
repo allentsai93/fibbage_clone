@@ -2,8 +2,10 @@ import React from 'react';
 
 const Gameroom = (props) => (
     <div>
-        <button onClick={(userId) => createGame(userId)}>New Game</button>
-        <button onClick={(gameId) => joinGame(gameId)}>Join Game</button>
+      <h1>Fibbage</h1>
+        <input placeholder="Enter a username"></input>
+        <button onClick={(userId, name) => props.createGame(userId, name)}>New Game</button>
+        <button onClick={(gameId) => props.joinGame(gameId)}>Join Game</button>
     </div>
 );
 
