@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import Game from './containers/Game';
+import Game from '../Game';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import { withStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import './App.css';
+import '../../App.css';
 
 const styles = theme => ({
   card: {
@@ -13,7 +13,7 @@ const styles = theme => ({
     margin: '10px'
   }
 });
-class App extends Component {
+class StartGame extends Component {
   state = {
     isLoaded: false,
     categoryChosen: false,
@@ -112,4 +112,4 @@ class App extends Component {
   }
 }
 
-export default withStyles(styles)(App);
+export default withStyles(styles)(StartGame);
