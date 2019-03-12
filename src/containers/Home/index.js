@@ -35,8 +35,7 @@ class Home extends Component {
     gameIdInputHandler = (e) =>{
         const gameId = e.target.value;
         this.setState({ 
-            gameId  : gameId, 
-            started : true
+            gameId  : gameId
         });
     }
 
@@ -46,6 +45,9 @@ class Home extends Component {
         firebase.database().ref('games/' + gameId + '/' + user).set({
             points : 0,
             id     : uuidv1()
+        })
+        this.setState({
+            started: true
         })
     }
 

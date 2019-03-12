@@ -7,12 +7,14 @@ class WaitingRoom extends Component {
     }
 
     componentDidMount = () => {
-
+        console.log(this.state.gameId)
     }
 
     startGameHandler = () => {
         this.setState({startGame: true})
     }
+
+
 
     render() {
         return (
