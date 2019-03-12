@@ -43,7 +43,6 @@ class Home extends Component {
                     userData.once("value")
                         .then((snapshot) => {
                             if(snapshot.hasChild(user)){
-                                console.log('hit')
                                return Promise.reject();
                             } else {
                                 firebase.database().ref('games/' + gameId + '/players/' + user).set({
@@ -94,7 +93,7 @@ class Home extends Component {
             justify="center"
             alignItems="center"
           >
-                {this.state.started ? <WaitingRoom /> : !this.state.existingRoom ? 
+                {this.state.started ? <WaitingRoom gameId={this.state.gameId} /> : !this.state.existingRoom ? 
                     <>
                     <input type="text" placeholder="Enter a username" onInput={this.inputHandler}/>
                     <span onClick={this.startGameHandler}>Create a Room</span>
