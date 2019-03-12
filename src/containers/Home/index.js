@@ -20,7 +20,8 @@ class Home extends Component {
         user: '',
         existingRoom: false,
         started: false,
-        errorMsg: ''
+        errorMsg: '',
+        joinGameErrorMsg: ''
     }
     
     startGameHandler = () => {
@@ -42,13 +43,22 @@ class Home extends Component {
     joinRoom = () => {
         const gameId = this.state.gameId;
         const user = this.state.user;
-        firebase.database().ref('games/' + gameId + '/' + user).set({
-            points : 0,
-            id     : uuidv1()
-        })
-        this.setState({
-            started: true
-        })
+        const userData = firebase.database().ref('games/' + gameId);
+        userData.once("value")
+            .then(function(snapshot){
+                if(snapshot.hasChild(user)){
+                    console.log('did we hit this at least?')
+                    this.setState({ joinGameErrorMsg: "Username already taken" })
+                } else {
+                    firebase.database().ref('games/' + gameId + '/players/' + user).set({
+                        points : 0,
+                        id     : uuidv1()
+                    })
+                    this.setState({
+                        started: true
+                    })
+                }
+            })
     }
 
     startGameHandler = () => {
@@ -58,7 +68,7 @@ class Home extends Component {
             firebase.database().ref('games/' + gameId).set({
                 gameOwner : gameOwner
             });
-            firebase.database().ref('games/' + gameId + '/' + gameOwner).set({
+            firebase.database().ref('games/' + gameId + '/players/' + gameOwner).set({
                 points    : 0,
                 id        : uuidv1()
             });
@@ -98,6 +108,11 @@ class Home extends Component {
                     <>
                         <input type="text" placeholder="Enter a game id" onInput={(e) => this.gameIdInputHandler(e)}/>
                         <button onClick={() => this.joinRoom()}>Join Room</button>
+                        {this.state.joinGameErrorMsg.length > 0 ? 
+                            <input type="text" placeholder="Enter a username" onInput={(e) => this.inputHandler(e)}/>
+                            :
+                            null
+                        }
                     </>
                 }
             </Grid>
