@@ -18,11 +18,11 @@ class Home extends Component {
         this.setState({started: true})
     }
 
-    inputHandler = (e, type) =>{
-        const errorMsg = type === 'gameId' ? "Must enter a game id to join a game" : 'Must enter a username to join game';
+    inputHandler = (e) =>{
+        const errorMsg = e.target.name === 'gameId' ? "Must enter a game id to join a game" : 'Must enter a username to join game';
 
         if(e.target.value.length > 0){
-            this.setState({ [type]: e.target.value });
+            this.setState({ [e.target.name]: e.target.value });
         } else {
             this.setState({ errorMsg: errorMsg})
         } 
@@ -52,9 +52,9 @@ class Home extends Component {
                             }
                         })
                         .then(() => this.setState({started: true, existingRoom: true}))
-                        .catch(() =>  this.setState({ errorMsg: "Username already taken" }))
+                        .catch(() =>  this.setState({ errorMsg: "Please enter another username." }))
                 }
-            }).catch(() =>  this.setState({ errorMsg: "Game does not exist" }))
+            }).catch(() =>  this.setState({ errorMsg: "Game does not exist." }))
     }
 
     startGameHandler = () => {
@@ -74,7 +74,7 @@ class Home extends Component {
                 started   : true
             })
         } else {
-            this.setState({ errorMsg: "Must enter a username to create game"})
+            this.setState({ errorMsg: "Must enter a username to create game."})
         }
     }
 
@@ -88,9 +88,9 @@ class Home extends Component {
           >
                 {this.state.started ? <WaitingRoom gameId={this.state.gameId} user={this.state.user} /> : 
                     <>
-                    <input type="text" placeholder="Enter a username" onInput={(e) => { this.inputHandler(e,'user') }}/>
+                    <input type="text" placeholder="Enter a username" name="user" onInput={this.inputHandler}/>
                     <button onClick={this.startGameHandler}>Create a Room</button>
-                    <input type="text" placeholder="Enter a game id" onInput={(e) => { this.inputHandler(e,'gameId') }}/>
+                    <input type="text" placeholder="Enter a game id" name="gameId" onInput={this.inputHandler}/>
                     <button onClick={this.joinRoom}>Join Room</button>
                     <p>{this.state.errorMsg}</p>
                     </>
