@@ -95,7 +95,7 @@ class Home extends Component {
             justify="center"
             alignItems="center"
           >
-                {this.state.started ? <WaitingRoom gameId={this.state.gameId} /> : !this.state.existingRoom ?
+                {this.state.started ? <WaitingRoom gameId={this.state.gameId} user={this.state.user} /> : !this.state.existingRoom ?
                     <>
                     <input type="text" placeholder="Enter a username" onInput={this.inputHandler}/>
                     <span onClick={this.startGameHandler}>Create a Room</span>

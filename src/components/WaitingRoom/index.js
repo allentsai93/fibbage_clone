@@ -6,7 +6,8 @@ function WaitingRoom(props) {
     const [startGame, setStartGame] = useState(false);
     const [players, setData] = useState([]);
 
-    const gameId = props.gameId;
+    const user    = props.user;
+    const gameId  = props.gameId;
     let userData  = {};
 
     useEffect(() => {
@@ -25,12 +26,12 @@ function WaitingRoom(props) {
         { !startGame ?
             <>
                 <h1>Players</h1>
-                {players.map(player => (
-                    <span>{player}</span>
+                {players.map((player, index) => (
+                    <span key={index}>{player}</span>
                 ))}
                 <button onClick={() => setStartGame(true)}>Start Game</button>
             </>
-        : <StartGame />}
+        : <StartGame gameId={gameId} user={user}/>}
         </>
     )
 }
