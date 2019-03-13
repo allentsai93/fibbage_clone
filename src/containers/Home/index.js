@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import WaitingRoom from '../../components/WaitingRoom';
 import Grid from '@material-ui/core/Grid';
 import { withFirebase } from '../../firebase';
-
+import shortid from 'shortid';
 import uuidv1 from 'uuid/v1';
-import uuidv4 from 'uuid/v4';
+
 class Home extends Component {
     state = {
         gameId: '',
@@ -59,7 +59,7 @@ class Home extends Component {
 
     startGameHandler = () => {
         if(this.state.user.length > 0){
-            const gameId    = uuidv4();
+            const gameId    = shortid.generate();
             const gameOwner = this.state.user
             this.props.firebase.database().ref('games/' + gameId).set({
                 gameOwner : gameOwner,
