@@ -27,11 +27,28 @@ function Game(props) {
         setChosenAnswer(e);
     }
 
+    function fetchPlayers(){
+        props.firebase.database().ref('games/' + gameId + '/players').once('value')
+          .then((snapshot) => {
+              userData = (snapshot.val());
+          })
+          .then(()=> {
+              let players = userData;
+              setData(players);
+          })
+          .then(() => {
+            console.log(players);
+          })
+    }
+
     function submitHandler() {
         let answer = submittedAnswer || autopickedAnswer;
         props.firebase.database().ref('games/' + gameId + '/players/' + user).update({
             fakeAnswer: answer
         })
+        let usersFakeAnswers = [];
+        fetchPlayers();
+        console.log(players)
         const randomAnswers = [submittedAnswer || autopickedAnswer, ...answers];
         shuffleArray(randomAnswers);
         //have to make sure this goes through db write 
