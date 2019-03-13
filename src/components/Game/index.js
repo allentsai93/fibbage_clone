@@ -12,10 +12,12 @@ function Game(props) {
     const [chosenAnswer, setChosenAnswer] = useState("");
     const [autopickedAnswer, setAutopickedAnswer] = useState("");
     const [players, setData] = useState([]);
+    // const [playersAnswers, setPlayersAnswers] = useState([]);
 
     const gameId = props.gameId;
     const user   = props.user;
-    let userData = [];
+    let userData = {};
+    let usersFakeAnswers = [];
 
 
     useEffect(() => {
@@ -27,18 +29,26 @@ function Game(props) {
         setChosenAnswer(e);
     }
 
-    function fetchPlayers(){
+    function fetchPlayersAnswers(){
         props.firebase.database().ref('games/' + gameId + '/players').once('value')
           .then((snapshot) => {
               userData = (snapshot.val());
           })
           .then(()=> {
-              let players = userData;
-              setData(players);
+            for(let user in userData){
+                usersFakeAnswers.push(userData[user].fakeAnswer);
+            }
           })
-          .then(() => {
-            console.log(players);
+          .then(()=> {
+            createAnswers();
           })
+    }
+
+    function createAnswers(){
+        let randomAnswers = [...usersFakeAnswers, ...answers];
+        shuffleArray(randomAnswers);
+        setFakeAnswer(true);
+        setAnswers(randomAnswers);
     }
 
     function submitHandler() {
@@ -46,15 +56,7 @@ function Game(props) {
         props.firebase.database().ref('games/' + gameId + '/players/' + user).update({
             fakeAnswer: answer
         })
-        let usersFakeAnswers = [];
-        fetchPlayers();
-        console.log(players)
-        const randomAnswers = [submittedAnswer || autopickedAnswer, ...answers];
-        shuffleArray(randomAnswers);
-        //have to make sure this goes through db write 
-        //maybe in this function?
-        setFakeAnswer(true);
-        setAnswers(randomAnswers);
+        fetchPlayersAnswers();
     }
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
