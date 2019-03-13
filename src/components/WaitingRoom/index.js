@@ -19,7 +19,23 @@ function WaitingRoom(props) {
             let players = Object.keys(userData);
             setData(players)
         })
+        
+        props.firebase.database().ref('games/' + gameId).once('value')
+        .then((snapshot) => {
+            return snapshot.val();
+        })
+        .then((data)=> {
+            if(data.started) {
+                setStartGame(true);
+            }
+        })
     })
+
+    const startGameHandler = () => {
+        props.firebase.database().ref('games/' + gameId).update({
+            started: true
+        })
+    }
 
     return (
         <>
@@ -30,7 +46,7 @@ function WaitingRoom(props) {
                 {players.map((player, index) => (
                     <span key={index}>{player}</span>
                 ))}
-                <button onClick={() => setStartGame(true)}>Start Game</button>
+                <button onClick={startGameHandler}>Start Game</button>
             </>
         : <StartGame gameId={gameId} user={user}/>}
         </>
