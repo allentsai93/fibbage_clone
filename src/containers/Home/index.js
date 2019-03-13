@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import WaitingRoom from '../../components/WaitingRoom';
 import Grid from '@material-ui/core/Grid';
+import { withFirebase } from '../../firebase';
+
 import uuidv1 from 'uuid/v1';
 import uuidv4 from 'uuid/v4';
 class Home extends Component {
@@ -113,4 +115,4 @@ class Home extends Component {
     }
 }
 
-export default Home;
+export default withFirebase(Home);
