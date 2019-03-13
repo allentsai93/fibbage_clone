@@ -24,7 +24,6 @@ function Game(props) {
     }, []);
 
     function answerSubmitHandler(e){
-        console.log(e);
         setChosenAnswer(e);
     }
 
