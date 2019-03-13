@@ -19,13 +19,14 @@ function WaitingRoom(props) {
             let players = Object.keys(userData);
             setData(players)
         })
-    }, [])
+    })
 
     return (
         <>
         { !startGame ?
             <>
                 <h1>Players</h1>
+                <p>Room: {gameId}</p>
                 {players.map((player, index) => (
                     <span key={index}>{player}</span>
                 ))}
