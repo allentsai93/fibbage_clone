@@ -25,7 +25,9 @@ function WaitingRoom(props) {
         { !startGame ?
             <>
                 <h1>Players</h1>
-                {players}
+                {players.map(player => (
+                    <span>{player}</span>
+                ))}
                 <button onClick={() => setStartGame(true)}>Start Game</button>
             </>
         : <StartGame />}
