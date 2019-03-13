@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import StartGame from '../StartGame';
-import { firebase } from '../../firebase.js';
+import { withFirebase } from '../../firebase';
 
 function WaitingRoom(props) {
     const [startGame, setStartGame] = useState(false);
@@ -10,7 +10,7 @@ function WaitingRoom(props) {
     let userData  = {};
 
     useEffect(() => {
-        firebase.database().ref('games/' + gameId + '/players').once('value')
+        props.firebase.database().ref('games/' + gameId + '/players').once('value')
         .then((snapshot) => {
             userData = (snapshot.val());
         })
@@ -35,4 +35,4 @@ function WaitingRoom(props) {
     )
 }
 
-export default WaitingRoom;
+export default withFirebase(WaitingRoom);
