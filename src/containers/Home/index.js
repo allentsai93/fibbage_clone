@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import WaitingRoom from '../../components/WaitingRoom';
 import Grid from '@material-ui/core/Grid';
-import { uuidv1, uuidv4, firebase } from '../../firebase.js';
+import { withFirebase } from '../../firebase';
 
+import uuidv1 from 'uuid/v1';
+import uuidv4 from 'uuid/v4';
 class Home extends Component {
     state = {
         gameId: '',
@@ -31,21 +33,21 @@ class Home extends Component {
     joinRoom = () => {
         const gameId    = this.state.gameId;
         const user      = this.state.user;
-        const gameData  = firebase.database().ref('games/');
+        const gameData  = this.props.firebase.database().ref('games/');
 
         gameData.once("value")
             .then((snapshot) => {
                 if(!snapshot.hasChild(gameId)){
                     return Promise.reject();
                 } else {
-                    const userData  = firebase.database().ref('games/' + gameId + '/players/');
+                    const userData  = this.props.firebase.database().ref('games/' + gameId + '/players/');
                     let nameTaken   = false;
                     userData.once("value")
                         .then((snapshot) => {
                             if(snapshot.hasChild(user)){
                                return Promise.reject();
                             } else {
-                                firebase.database().ref('games/' + gameId + '/players/' + user).set({
+                                this.props.firebase.database().ref('games/' + gameId + '/players/' + user).set({
                                     points : 0,
                                     id     : uuidv1()
                                 })
@@ -61,10 +63,10 @@ class Home extends Component {
         if(this.state.user.length > 0){
             const gameId    = uuidv4();
             const gameOwner = this.state.user
-            firebase.database().ref('games/' + gameId).set({
+            this.props.firebase.database().ref('games/' + gameId).set({
                 gameOwner : gameOwner
             });
-            firebase.database().ref('games/' + gameId + '/players/' + gameOwner).set({
+            this.props.firebase.database().ref('games/' + gameId + '/players/' + gameOwner).set({
                 points    : 0,
                 id        : uuidv1()
             });
@@ -117,4 +119,4 @@ class Home extends Component {
     }
 }
 
-export default Home;
+export default withFirebase(Home);
