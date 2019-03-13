@@ -29,8 +29,14 @@ function Game(props) {
     }
 
     function submitHandler() {
+        let answer = submittedAnswer || autopickedAnswer;
+        props.firebase.database().ref('games/' + gameId + '/players/' + user).update({
+            fakeAnswer: answer
+        })
         const randomAnswers = [submittedAnswer || autopickedAnswer, ...answers];
         shuffleArray(randomAnswers);
+        //have to make sure this goes through db write 
+        //maybe in this function?
         setFakeAnswer(true);
         setAnswers(randomAnswers);
     }
