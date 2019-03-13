@@ -64,7 +64,8 @@ class Home extends Component {
             const gameId    = uuidv4();
             const gameOwner = this.state.user
             this.props.firebase.database().ref('games/' + gameId).set({
-                gameOwner : gameOwner
+                gameOwner : gameOwner,
+                started: false
             });
             this.props.firebase.database().ref('games/' + gameId + '/players/' + gameOwner).set({
                 points    : 0,
