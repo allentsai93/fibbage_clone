@@ -19,7 +19,7 @@ function WaitingRoom(props) {
             let players = Object.keys(userData);
             setData(players)
         })
-        
+
         props.firebase.database().ref('games/' + gameId).once('value')
         .then((snapshot) => {
             return snapshot.val();

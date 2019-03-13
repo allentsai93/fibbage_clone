@@ -18,16 +18,14 @@ class Home extends Component {
         this.setState({started: true})
     }
 
-    inputHandler = (e) =>{
-        const name = e.target.value;
-        this.setState({ user: name });
-    }
+    inputHandler = (e, type) =>{
+        const errorMsg = type === 'gameId' ? "Must enter a game id to join a game" : 'Must enter a username to join game';
 
-    gameIdInputHandler = (e) =>{
-        const gameId = e.target.value;
-        this.setState({
-            gameId  : gameId
-        });
+        if(e.target.value.length > 0){
+            this.setState({ [type]: e.target.value });
+        } else {
+            this.setState({ errorMsg: errorMsg})
+        } 
     }
 
     joinRoom = () => {
@@ -53,7 +51,7 @@ class Home extends Component {
                                 })
                             }
                         })
-                        .then(() => this.setState({started: true}))
+                        .then(() => this.setState({started: true, existingRoom: true}))
                         .catch(() =>  this.setState({ errorMsg: "Username already taken" }))
                 }
             }).catch(() =>  this.setState({ errorMsg: "Game does not exist" }))
@@ -80,14 +78,6 @@ class Home extends Component {
         }
     }
 
-    joinGameHandler = (e) =>{
-        if(this.state.user.length > 0){
-            this.setState({ existingRoom: true });
-        } else {
-            this.setState({ errorMsg: "Must enter a username to join game"})
-        }
-    }
-
     render() {
         return (
             <Grid
@@ -96,23 +86,13 @@ class Home extends Component {
             justify="center"
             alignItems="center"
           >
-                {this.state.started ? <WaitingRoom gameId={this.state.gameId} user={this.state.user} /> : !this.state.existingRoom ?
+                {this.state.started ? <WaitingRoom gameId={this.state.gameId} user={this.state.user} /> : 
                     <>
-                    <input type="text" placeholder="Enter a username" onInput={this.inputHandler}/>
-                    <span onClick={this.startGameHandler}>Create a Room</span>
-                    <span onClick={this.joinGameHandler}>Join a Room</span>
+                    <input type="text" placeholder="Enter a username" onInput={(e) => { this.inputHandler(e,'user') }}/>
+                    <button onClick={this.startGameHandler}>Create a Room</button>
+                    <input type="text" placeholder="Enter a game id" onInput={(e) => { this.inputHandler(e,'gameId') }}/>
+                    <button onClick={this.joinRoom}>Join Room</button>
                     <p>{this.state.errorMsg}</p>
-                    </>
-                    :
-                    <>
-                        <input type="text" placeholder="Enter a game id" onInput={this.gameIdInputHandler}/>
-                        <button onClick={this.joinRoom}>Join Room</button>
-                        <p>{this.state.errorMsg}</p>
-                        {this.state.errorMsg === 'Username already taken' ?
-                            <input type="text" placeholder="Enter a username" onInput={this.inputHandler}/>
-                            :
-                            null
-                        }
                     </>
                 }
             </Grid>
