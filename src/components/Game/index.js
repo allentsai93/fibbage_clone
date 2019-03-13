@@ -2,24 +2,36 @@ import React, { useState, useEffect } from 'react';
 import Question from '../../components/Question';
 import Answers from '../../components/Answers';
 import Results from '../../components/Results';
+import { withFirebase } from '../../firebase';
 
 function Game(props) {
     const [question, setQuestion] = useState({});
-    const [answered, setAnswered] = useState(false);
+    const [fakeAnswerSubmitted, setFakeAnswer] = useState(false);
     const [submittedAnswer, setSubmittedAnswer] = useState("");
     const [answers, setAnswers] = useState([]);
     const [chosenAnswer, setChosenAnswer] = useState("");
     const [autopickedAnswer, setAutopickedAnswer] = useState("");
+    const [players, setData] = useState([]);
+
+    const gameId = props.gameId;
+    const user   = props.user;
+    let userData = [];
+
 
     useEffect(() => {
-            setQuestion(props.question);
-            setAnswers([props.question.results[0].correct_answer, ...props.question.results[0].incorrect_answers])
+        setQuestion(props.question);
+        setAnswers([props.question.results[0].correct_answer, ...props.question.results[0].incorrect_answers])
     }, []);
+
+    function answerSubmitHandler(e){
+        console.log(e);
+        setChosenAnswer(e);
+    }
 
     function submitHandler() {
         const randomAnswers = [submittedAnswer || autopickedAnswer, ...answers];
         shuffleArray(randomAnswers);
-        setAnswered(true);
+        setFakeAnswer(true);
         setAnswers(randomAnswers);
     }
     function shuffleArray(array) {
@@ -32,8 +44,8 @@ function Game(props) {
         <>
             {question.response_code === 0 ?
                 <>
-                <Question question={question.results[0].question}/>
-                {!answered ? 
+                <Question question={question.results[0].question} gameId={props.gameId} user={props.user}/>
+                {!fakeAnswerSubmitted ? 
                     <form>
                         <input type="text" onChange={(e) => { setSubmittedAnswer(e.target.value) }} placeholder={autopickedAnswer !== '' ? autopickedAnswer : ''}/>
                         <span onClick={() => { submitHandler() }}>Submit</span>
@@ -42,7 +54,7 @@ function Game(props) {
                 : !chosenAnswer ? 
                     <Answers 
                     answers={answers}
-                    onSubmit={(e) => setChosenAnswer(e)}
+                    onSubmit={(e) => answerSubmitHandler(e)}
                     /> : <Results correct={question.results[0].correct_answer} />
                     }
                 </>
@@ -51,4 +63,4 @@ function Game(props) {
     )
 }
 
-export default Game;
+export default withFirebase(Game);
