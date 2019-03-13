@@ -1,7 +1,5 @@
 import firebase from 'firebase/app';
 import 'firebase/database';
-import uuidv1 from 'uuid/v1';
-import uuidv4 from 'uuid/v4';
 
 const config = {
   apiKey: "AIzaSyAsdY2YHQDAVJ9ZJgsqNVB2kaB3A5jVmNY",
@@ -11,6 +9,11 @@ const config = {
   storageBucket: "fibbage-b1e4d.appspot.com",
 };
 
-firebase.initializeApp(config);
-
-export { uuidv1, uuidv4, firebase };
+class Firebase {
+    constructor() {
+        firebase.initializeApp(config);
+        this.db = firebase.database();
+    }
+}
+  
+export default Firebase;
