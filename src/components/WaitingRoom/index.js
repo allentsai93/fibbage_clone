@@ -6,9 +6,10 @@ function WaitingRoom(props) {
     const [startGame, setStartGame] = useState(false);
     const [players, setData] = useState([]);
 
-    const user    = props.user;
-    const gameId  = props.gameId;
-    let userData  = {};
+    const user            = props.user;
+    const gameId          = props.gameId;
+    let userData          = {};
+    const fbGameState     = props.firebase.database().ref('games/' + gameId + '/gameState');
 
     useEffect(() => {
         props.firebase.database().ref('games/' + gameId + '/players').once('value')
@@ -19,8 +20,8 @@ function WaitingRoom(props) {
             let players = Object.keys(userData);
             setData(players)
         })
-        
-        props.firebase.database().ref('games/' + gameId).once('value')
+
+        fbGameState.once('value')
         .then((snapshot) => {
             return snapshot.val();
         })
@@ -32,7 +33,7 @@ function WaitingRoom(props) {
     })
 
     const startGameHandler = () => {
-        props.firebase.database().ref('games/' + gameId).update({
+        fbGameState.update({
             started: true
         })
     }

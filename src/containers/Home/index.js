@@ -62,12 +62,15 @@ class Home extends Component {
     startGameHandler = () => {
         if(this.state.user.length > 0){
             const gameId    = uuidv4();
-            const gameOwner = this.state.user
-            this.props.firebase.database().ref('games/' + gameId).set({
-                gameOwner : gameOwner,
-                started: false
+            const gameOwner = this.state.user;
+            const fireDb    = this.props.firebase.database();
+            fireDb.ref('games/' + gameId).set({
+                gameOwner : gameOwner
             });
-            this.props.firebase.database().ref('games/' + gameId + '/players/' + gameOwner).set({
+            fireDb.ref('games/' + gameId + '/gameState').set({
+                started:false
+            })
+            fireDb.ref('games/' + gameId + '/players/' + gameOwner).set({
                 points    : 0,
                 id        : uuidv1()
             });
