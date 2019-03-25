@@ -51,12 +51,17 @@ function StartGame(props) {
   function setTurnOrder(players){
     console.log('this worked?');
     let turnOrder      = [];
-    let mutablePlayers = players;
+    let mutablePlayers = [];
+    
+    for(let player in players){
+      mutablePlayers.push(player);
+    }
+    
     console.log(mutablePlayers);
     mutablePlayers.forEach(function(player){
-      let selection = choose(players);
+      let selection = choose(mutablePlayers);
       turnOrder.push(selection);
-      mutablePlayers.filter(mutablePlayer => mutablePlayer !== player)
+      mutablePlayers.filter(mutablePlayer => mutablePlayer === player)
     })
     console.log(turnOrder);
   }
