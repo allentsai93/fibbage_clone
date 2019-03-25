@@ -39,7 +39,26 @@ function StartGame(props) {
       .then(()=> {
           let players = userData;
           setData(players);
+          setTurnOrder(players);
       })
+  }
+
+  function choose(choices) {
+    var index = Math.floor(Math.random() * choices.length);
+    return choices[index];
+  }
+
+  function setTurnOrder(players){
+    console.log('this worked?');
+    let turnOrder      = [];
+    let mutablePlayers = players;
+    console.log(mutablePlayers);
+    mutablePlayers.forEach(function(player){
+      let selection = choose(players);
+      turnOrder.push(selection);
+      mutablePlayers.filter(mutablePlayer => mutablePlayer !== player)
+    })
+    console.log(turnOrder);
   }
 
   function fetchQuestions(category)  {

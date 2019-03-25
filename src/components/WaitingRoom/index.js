@@ -20,7 +20,7 @@ function WaitingRoom(props) {
             setData(players)
         })
 
-        props.firebase.database().ref('games/' + gameId).once('value')
+        props.firebase.database().ref('games/' + gameId + '/gameState').once('value')
         .then((snapshot) => {
             return snapshot.val();
         })
@@ -33,7 +33,7 @@ function WaitingRoom(props) {
 
     const startGameHandler = () => {
         props.firebase.database().ref('games/' + gameId).update({
-            started: true
+            gameState: { started: true }
         })
     }
 
