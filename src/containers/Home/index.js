@@ -14,10 +14,6 @@ class Home extends Component {
         errorMsg: ''
     }
 
-    startGameHandler = () => {
-        this.setState({started: true})
-    }
-
     inputHandler = (e) =>{
         const errorMsg = e.target.name === 'gameId' ? "Must enter a game id to join a game" : 'Must enter a username to join game';
 
@@ -63,7 +59,7 @@ class Home extends Component {
             const gameOwner = this.state.user
             this.props.firebase.database().ref('games/' + gameId).set({
                 gameOwner : gameOwner,
-                started: false
+                gameState : { started: false }
             });
             this.props.firebase.database().ref('games/' + gameId + '/players/' + gameOwner).set({
                 points    : 0,
