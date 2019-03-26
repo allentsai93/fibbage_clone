@@ -49,7 +49,6 @@ function StartGame(props) {
   }
 
   function setTurnOrder(players){
-    console.log('this worked?');
     let turnOrder      = [];
     let mutablePlayers = [];
     
@@ -57,13 +56,17 @@ function StartGame(props) {
       mutablePlayers.push(player);
     }
     
-    console.log(mutablePlayers);
     mutablePlayers.forEach(function(player){
       let selection = choose(mutablePlayers);
       turnOrder.push(selection);
-      mutablePlayers.filter(mutablePlayer => mutablePlayer === player)
+      mutablePlayers = mutablePlayers.filter(mutablePlayer => mutablePlayer !== selection);
     })
     console.log(turnOrder);
+
+    props.firebase.database().ref('games/' + gameId + '/gameOwner').once('value')
+    .then((snapshot) => {
+
+    })
   }
 
   function fetchQuestions(category)  {
