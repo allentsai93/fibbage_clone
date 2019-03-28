@@ -21,6 +21,7 @@ function StartGame(props) {
   const [categoryChosen, setCategoryChosen] = useState(false);
   const [loadedQuestion, setLoadedQuestion] = useState({});
   const [players, setData] = useState([]);
+  const [gameOwner, setGameOwner] = useState("");
 
   const gameId = props.gameId;
   const user   = props.user;
@@ -29,6 +30,10 @@ function StartGame(props) {
   useEffect(() => {
     setCategories(categoriesJson);
     fetchPlayers();
+    fetchGameOwner();
+    Promise.all([fetchPlayers, fetchGameOwner]).then(function(){
+      setTurnOrder(players);
+    })
   }, []);
 
   function fetchPlayers(){
@@ -39,7 +44,14 @@ function StartGame(props) {
       .then(()=> {
           let players = userData;
           setData(players);
-          setTurnOrder(players);
+          // setTurnOrder(players);
+      })
+  }
+
+  function fetchGameOwner(){
+    props.firebase.database().ref('games/' + gameId + '/gameOwner').once('value')
+      .then((snapshot) => {
+        setGameOwner(snapshot.val());
       })
   }
 
@@ -51,22 +63,22 @@ function StartGame(props) {
   function setTurnOrder(players){
     let turnOrder      = [];
     let mutablePlayers = [];
-    
+
     for(let player in players){
       mutablePlayers.push(player);
     }
-    
+
     mutablePlayers.forEach(function(player){
       let selection = choose(mutablePlayers);
       turnOrder.push(selection);
       mutablePlayers = mutablePlayers.filter(mutablePlayer => mutablePlayer !== selection);
     })
-    console.log(turnOrder);
+    console.log(user);
+    console.log(gameOwner);
 
-    props.firebase.database().ref('games/' + gameId + '/gameOwner').once('value')
-    .then((snapshot) => {
-
-    })
+    if(user === gameOwner){
+      console.log('that worked?')
+    }
   }
 
   function fetchQuestions(category)  {
