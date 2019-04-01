@@ -51,7 +51,7 @@ function StartGame(props) {
       .then((snapshot) => {
           gameOwnerUnr = (snapshot.val());
       })
-      .then(()=> {
+      .then(()=> {git pu
           let gameOwner = gameOwnerUnr;
           setData(gameOwner);
       })
