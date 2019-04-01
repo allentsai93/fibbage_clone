@@ -17,23 +17,21 @@ const styles = theme => ({
 });
 
 function StartGame(props) {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories]         = useState([]);
   const [categoryChosen, setCategoryChosen] = useState(false);
   const [loadedQuestion, setLoadedQuestion] = useState({});
-  const [players, setData] = useState([]);
-  const [gameOwner, setGameOwner] = useState("");
+  const [players, setData]                  = useState([]);
+  const [gameOwner, setGameOwner]           = useState("");
 
-  const gameId = props.gameId;
-  const user   = props.user;
-  let userData = [];
+  const gameId  = props.gameId;
+  const user    = props.user;
+  let userData  = [];
+  let gameOwnerUnr = '';
 
   useEffect(() => {
     setCategories(categoriesJson);
     fetchPlayers();
     fetchGameOwner();
-    Promise.all([fetchPlayers, fetchGameOwner]).then(function(){
-      setTurnOrder(players);
-    })
   }, []);
 
   function fetchPlayers(){
@@ -44,14 +42,18 @@ function StartGame(props) {
       .then(()=> {
           let players = userData;
           setData(players);
-          // setTurnOrder(players);
+          setTurnOrder(players);
       })
   }
 
   function fetchGameOwner(){
     props.firebase.database().ref('games/' + gameId + '/gameOwner').once('value')
       .then((snapshot) => {
-        setGameOwner(snapshot.val());
+          gameOwnerUnr = (snapshot.val());
+      })
+      .then(()=> {
+          let gameOwner = gameOwnerUnr;
+          setData(gameOwner);
       })
   }
 
@@ -60,10 +62,16 @@ function StartGame(props) {
     return choices[index];
   }
 
-  function setTurnOrder(players){
+  async function setTurnOrder(players){
+    const data         = {};
     let turnOrder      = [];
     let mutablePlayers = [];
 
+    [data.gameOwner] = await Promise.all([
+      fetchGameOwner()
+    ])
+
+    console.log(data);
     for(let player in players){
       mutablePlayers.push(player);
     }
@@ -73,8 +81,8 @@ function StartGame(props) {
       turnOrder.push(selection);
       mutablePlayers = mutablePlayers.filter(mutablePlayer => mutablePlayer !== selection);
     })
-    console.log(user);
-    console.log(gameOwner);
+    // console.log(user);
+    // console.log(gameOwner);
 
     if(user === gameOwner){
       console.log('that worked?')
